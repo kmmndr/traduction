@@ -31,7 +31,7 @@ namespace :traduction do
                  to: [default_locale[:key], File.open(default_locale[:file])],
                  prefix: locale_to_check,
                  empty_message: 'No obsolete key') do |k,v|
-      "'#{k}' key is obsolete"
+      "'#{k}' (value \"#{v}\") key is obsolete"
     end
   end
   task :obsolete => :environment
