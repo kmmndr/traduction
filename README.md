@@ -24,14 +24,18 @@ Using Rake tasks, you may list :
   - obsolete changes in a specific locale, compared to default locale
   - untranslated changes in a specific locale, still compared to default locale
   - added keys since an old git commit
+  - all keys including modifications from a file (the file you might get back from translators)
+
+Format used for import/output is CSV having ';' as field separator and '"' as text quote char.
 
 Rake tasks are prefixed by 'traduction' namespace :
 
 ```
 $ rake -T | grep 'traduction'
-rake traduction:added[locale,revision]  # Show added keys for locale LOCALE since git revision
-rake traduction:obsolete[locale]        # Show obsolete keys for locale LOCALE
-rake traduction:untranslated[locale]    # Show untranslated keys for locale LOCALE
+rake traduction:added[locale,revision]   # Show added keys for locale LOCALE since git revision
+rake traduction:import[locale,filename]  # List keys from csv file returned by translators
+rake traduction:obsolete[locale]         # Show obsolete keys for locale LOCALE
+rake traduction:untranslated[locale]     # Show untranslated keys for locale LOCALE
 ```
 
 If you do not specify locale, Traduction will use `I18n.default_locale`.
