@@ -7,23 +7,30 @@ module Traduction
         from_prefix, from_content = options[:from].to_a
         to_prefix, to_content = options[:to].to_a
         prefix = options[:prefix]
+        header = options[:header]
+        format = options[:format] || :csv
 
         from = YAML::load(from_content)[from_prefix]
         to = YAML::load(to_content)[to_prefix]
 
-        messages = diff_yaml(from, to, prefix: prefix) do |k,v|
-          yield k,v
-        end
+        data = diff_yaml(from, to, prefix: prefix)
 
-        display_messages(messages, empty_message: 'No added keys')
+        generate_csv(data, header: header)
       end
 
-      def display_messages(messages, options = {})
-        empty_message = options[:empty_message] || 'Nothing found'
-        if messages.present?
-          messages.each { |m| puts m }
-        else
-          puts empty_message
+      def generate_csv(data, options = {})
+        header = options[:header] || nil
+
+        CSV.generate(Traduction::CSV_FORMAT) do |csv|
+          unless header.nil?
+            case header
+            when String
+              csv << [header]
+            when Array
+              csv << header
+            end
+          end
+          data.each { |m| csv << m } if data.present?
         end
       end
 
@@ -40,15 +47,27 @@ module Traduction
       end
 
       def diff_yaml(from, to, options = {}, &block)
-        messages = []
         prefix = options[:prefix] || nil
+        data = []
+
         from.diff_more(to, :ignore_values => true).flatten_keys(prefix).each do |k,v|
-          messages << yield(k,v)
+          data << [k,v]
         end
-        messages
+
+        data
       end
     end
 
     extend I18nMethods
   end
 end
+#
+# 
+#text: (CSV.generate do |csv|
+# 63           csv << @header
+# 64           @ragreements.each do |o|
+# 65             csv << o.values.map { |l| l.is_a?(Array) ? l.join("\n") : l }
+# 66           end
+# 67         end)
+#
+#
