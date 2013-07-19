@@ -8,6 +8,22 @@ end
 
 namespace :traduction do
 
+  desc "Show all keys for locale LOCALE"
+  task :all, [:locale] do |t, args|
+    args.with_defaults(:locale => 'es')
+    locale_to_check = args.locale
+    default_locale = Traduction::I18n.load_default_locale
+
+    puts Traduction::I18n.diff_all(
+                 from: [default_locale[:key], File.open(default_locale[:file])],
+                 to: [locale_to_check, File.open(Traduction::I18n.locale_file(locale_to_check))],
+                 prefix: locale_to_check,
+                 header: ['All keys', 'original value', 'translated value'],
+                 dont_ignore_values: true
+                 )
+  end
+  task :all => :environment
+
   desc "Show untranslated keys for locale LOCALE"
   task :untranslated, [:locale] do |t, args|
     args.with_defaults(:locale => 'es')

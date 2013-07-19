@@ -33,6 +33,7 @@ Rake tasks are prefixed by 'traduction' namespace :
 ```
 $ rake -T | grep 'traduction'
 rake traduction:added[locale,revision]   # Show added keys for locale LOCALE since git revision
+rake traduction:all[locale]              # Show all keys for locale LOCALE
 rake traduction:import[locale,filename]  # List keys from csv file returned by translators
 rake traduction:obsolete[locale]         # Show obsolete keys for locale LOCALE
 rake traduction:untranslated[locale]     # Show untranslated keys for locale LOCALE
