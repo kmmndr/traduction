@@ -20,6 +20,25 @@ module Traduction
       ret
     end
 
+    def merge_hash(hash, options = {})
+      ret = {}
+      skip_remaining_hash = options[:skip_remaining_hash] || false
+
+      remaining_hash = hash
+      self.each do |k,v|
+        ret[k] = [v, hash[k]]
+        remaining_hash.delete(k) unless skip_remaining_hash
+      end
+
+      unless skip_remaining_hash
+        remaining_hash.each do |k,v|
+          ret[k] = [self[k], v]
+        end
+      end
+
+      ret
+    end
+
     def diff_more(other_hash, options = {})
       ignore_values = options[:ignore_values] || false
 
